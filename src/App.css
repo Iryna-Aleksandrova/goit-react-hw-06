@@ -16,12 +16,14 @@ button {
   font-family: inherit;
   background-color: #747bff;
   cursor: pointer;
-  transition: border-color 0.25s;
+  transition: border-color 0.25s, transform 0.3s ease;
+  border-color: none;
 }
 
 button:hover {
   border-color: #a6aaef;
   background-color: #4f53a4;
+  transform: scale(1.1);
 }
 button:focus,
 button:focus-visible {

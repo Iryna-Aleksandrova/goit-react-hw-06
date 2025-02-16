@@ -1,40 +1,46 @@
-import { useId } from "react";
-import { Formik, Form, Field, ErrorMessage } from "formik";
-import * as Yup from "yup";
-import { nanoid } from "nanoid";
-import s from "./ContactForm.module.css";
+import { useId } from 'react';
+import { Formik, Form, Field, ErrorMessage } from 'formik';
+import * as Yup from 'yup';
+import { nanoid } from 'nanoid';
+import s from './ContactForm.module.css';
+import { useDispatch } from 'react-redux';
+import { addContact } from '../../redux/contactsSlice';
 
 const initialValues = {
-  name: "",
-  number: "",
+  name: '',
+  number: '',
 };
 
 const onlyLetters = /^[A-Za-zА-Яа-яЄєІіЇїҐґ-\s]+$/;
 
 const FeedbackSchema = Yup.object().shape({
   name: Yup.string()
-    .matches(onlyLetters, "Only letters")
-    .min(3, "Too Short!")
-    .max(50, "Too Long!")
-    .required("Name is required"),
+    .matches(onlyLetters, 'Only letters')
+    .min(3, 'Too Short!')
+    .max(50, 'Too Long!')
+    .required('Name is required'),
 
   number: Yup.string()
-    .matches(/^\+?[0-9\s\-()]*$/, "Invalid phone number")
-    .min(3, "Too Short!")
-    .max(50, "Too Long!")
-    .required("Phone number is required"),
+    .matches(/^\+?[0-9\s\-()]*$/, 'Invalid phone number')
+    .min(3, 'Too Short!')
+    .max(50, 'Too Long!')
+    .required('Phone number is required'),
 });
 
-const ContactForm = ({ onAdd }) => {
+const ContactForm = () => {
+  const dispatch = useDispatch();
   const contactId = useId();
   const phoneId = useId();
   const handelSubmit = (values, actions) => {
-    onAdd({
-      ...values,
-      id: nanoid(4),
-    });
+    dispatch(
+      addContact({
+        id: nanoid(4),
+        ...values,
+      }),
+    );
     actions.resetForm();
   };
+
   return (
     <div className={s.contactForm}>
       <Formik
@@ -44,13 +50,13 @@ const ContactForm = ({ onAdd }) => {
       >
         <Form className={s.form}>
           <div className={s.div}>
-            <label htmlFor={contactId} className={s.label}>
+            <label className={s.label} htmlFor={contactId}>
               Name
             </label>
             <Field
+              className={s.input}
               type="text"
               name="name"
-              className={s.input}
               id={contactId}
             ></Field>
             <ErrorMessage className={s.error} name="name" component="span" />
@@ -60,14 +66,14 @@ const ContactForm = ({ onAdd }) => {
               Number
             </label>
             <Field
+              className={s.input}
               type="tel"
               name="number"
-              className={s.input}
               id={phoneId}
             ></Field>
             <ErrorMessage className={s.error} name="number" component="span" />
           </div>
-          <button type="submit" className={s.button}>
+          <button className={s.button} type="submit">
             Add contact
           </button>
         </Form>
